@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yolaidi- <yolaidi-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/06/25 17:07:40 by yolaidi-         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:28:58 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,16 @@
 # include <unistd.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <signal.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 # define MAX_TOKENS 100
 
@@ -98,7 +108,7 @@ ast_node_t *parse(token_t *tokens);
 void free_ast(ast_node_t *node);
 ast_node_t *create_ast_node(node_type_t type);
 int count_tokens(token_t *tokens);
-int ft_strlen_array(char **str);
+int ft_ft_strlen_array(char **str);
 ast_node_t *parse_command(parser_t *parser);
 void free_ast(ast_node_t *node);
 int is_redirection(const char *type);
@@ -106,5 +116,25 @@ redir_type_t get_redir_type(const char *type);
 char	**ft_split(char const *s, char c);
 void ft_copy_env(char **env, t_env **copy_env);
 void ft_free_env(t_env **env);
+size_t	ft_strlen(const char *str);
+char    *ft_strchr(const char *s, int c);
+char    *ft_strdup(const char *s);
+// New: parsing step
+ast_node_t *parse_input_line(const char *line);
 
+// New: built-in and heredoc helpers
+int export_builtin(char **args, t_env **env);
+int unset_builtin(char **args, t_env **env);
+t_env *set_env_var(t_env *env, const char *key, const char *value);
+int heredoc(const char *delimiter);
+char *expand_vars(const char *input, t_env *env, int last_status);
+int ft_strcmp(const char *s1, const char *s2);
+int is_builtin(const char *name);
+int builtin_cd(char **args, t_env *env);
+int builtin_pwd(void);
+int builtin_echo(char **args);
+int builtin_env(t_env *env);
+int builtin_export(char **args, t_env **env);
+int builtin_unset(char **args, t_env **env);
+int builtin_exit(void);
 #endif

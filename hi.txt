@@ -1,0 +1,14 @@
+total 168
+drwxrwxr-x   6 abdelilah abdelilah  4096 Jul 17 01:43 .
+drwxr-x--- 104 abdelilah abdelilah  4096 Jul 17 00:46 ..
+drwxrwxr-x   2 abdelilah abdelilah  4096 Jul 17 01:43 exec
+drwxrwxr-x   8 abdelilah abdelilah  4096 Jul 17 01:20 .git
+-rw-r--r--   1 abdelilah abdelilah     0 Jul 17 01:43 hi.txt
+-rw-rw-r--   1 abdelilah abdelilah 13520 Jul 17 01:29 main.c
+-rw-rw-r--   1 abdelilah abdelilah 16768 Jul 17 01:43 main.o
+-rw-rw-r--   1 abdelilah abdelilah  1616 Jul 15 15:01 Makefile
+-rwxrwxr-x   1 abdelilah abdelilah 32520 Jul 17 01:43 minishell
+-rw-rw-r--   1 abdelilah abdelilah  3867 Jul 17 00:46 minishell.h
+-rw-rw-r--   1 abdelilah abdelilah 68627 Jul 14 15:37 Minishell Map - GitHub _ @vietdu91 @QnYosa - Feuille 1.csv
+drwxrwxr-x   2 abdelilah abdelilah  4096 Jul 17 01:43 parsing
+drwxrwxr-x   2 abdelilah abdelilah  4096 Jul 17 01:43 utils

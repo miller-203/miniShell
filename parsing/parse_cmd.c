@@ -52,10 +52,10 @@ ast_node_t *parse_command(parser_t *parser)
                 break;
             }
 
-            cmd->args[cmd->arg_count] = strdup(token->value);
+            cmd->args[cmd->arg_count] = ft_strdup(token->value);
 
             if (cmd->arg_count == 0)
-                cmd->name = strdup(token->value);
+                cmd->name = ft_strdup(token->value);
 
             cmd->arg_count++;
             parser->current++;

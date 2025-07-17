@@ -49,8 +49,23 @@ redirection_t *create_redirection(redir_type_t type, char *filename)
         return NULL;
 
     redir->type = type;
-    redir->filename = strdup(filename);
+    redir->filename = ft_strdup(filename);
     redir->next = NULL;
 
     return redir;
+}
+
+int ft_strcmp(const char *s1, const char *s2)
+{
+    unsigned char c1, c2;
+    while (*s1 || *s2)
+    {
+        c1 = (unsigned char)*s1;
+        c2 = (unsigned char)*s2;
+        if (c1 != c2)
+            return c1 - c2;
+        s1++;
+        s2++;
+    }
+    return 0;
 }

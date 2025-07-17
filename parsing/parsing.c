@@ -50,3 +50,14 @@ ast_node_t *parse(token_t *tokens)
 
     return parse_pipeline(&parser);
 }
+
+ast_node_t *parse_input_line(const char *line) {
+    if (!line || !*line)
+        return NULL;
+    token_t *tokens = tokenize((char *)line);
+    if (!tokens)
+        return NULL;
+    ast_node_t *ast = parse(tokens);
+    free_tokens(tokens);
+    return ast;
+}

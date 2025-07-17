@@ -36,11 +36,13 @@ void free_ast(ast_node_t *node)
         if (node->data.command)
         {
             free(node->data.command->name);
-
-            for (int i = 0; i < node->data.command->arg_count; i++)
+            int i = 0;
+            while (i < node->data.command->arg_count)
+            {
                 free(node->data.command->args[i]);
+                i++;
+            }
             free(node->data.command->args);
-
             redirection_t *redir = node->data.command->redirections;
             while (redir)
             {
@@ -49,7 +51,6 @@ void free_ast(ast_node_t *node)
                 free(redir);
                 redir = next;
             }
-
             free(node->data.command);
         }
     }
