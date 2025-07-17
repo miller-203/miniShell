@@ -164,155 +164,178 @@ char *find_in_path(const char *cmd, t_env *env) {
     return NULL;
 }
 
-int execute_command(command_t *cmd, t_env **env) {
-    if (!cmd || !cmd->name) return 1;
-    
-    // Expand variables in arguments
-    int i = 0;
-    while (i < cmd->arg_count) {
-        char *expanded = expand_vars(cmd->args[i], *env, 0);
-        if (expanded) {
-            free(cmd->args[i]);
-            cmd->args[i] = expanded;
-        }
-        i++;
-    }
-    
-    // Expand variables in redirections
-    redirection_t *r = cmd->redirections;
-    while (r) {
-        char *expanded = expand_vars(r->filename, *env, 0);
-        if (expanded) {
-            free(r->filename);
-            r->filename = expanded;
-        }
-        r = r->next;
-    }
-    
-    if (is_builtin(cmd->name)) {
-        int saved_stdin = dup(STDIN_FILENO);
-        int saved_stdout = dup(STDOUT_FILENO);
-        
-        if (apply_redirections(cmd->redirections) < 0) {
-            dup2(saved_stdin, STDIN_FILENO);
-            dup2(saved_stdout, STDOUT_FILENO);
-            close(saved_stdin);
-            close(saved_stdout);
-            return 1;
-        }
-        
-        int result = 1;
-        if (ft_strcmp(cmd->name, "exit") == 0) {
-            result = builtin_exit();
-        } else if (ft_strcmp(cmd->name, "cd") == 0) {
-            result = builtin_cd(cmd->args, *env);
-        } else if (ft_strcmp(cmd->name, "pwd") == 0) {
-            result = builtin_pwd();
-        } else if (ft_strcmp(cmd->name, "echo") == 0) {
-            result = builtin_echo(cmd->args);
-        } else if (ft_strcmp(cmd->name, "env") == 0) {
-            result = builtin_env(*env);
-        } else if (ft_strcmp(cmd->name, "export") == 0) {
-            result = builtin_export(cmd->args, env);
-        } else if (ft_strcmp(cmd->name, "unset") == 0) {
-            result = builtin_unset(cmd->args, env);
-        }
-        
-        dup2(saved_stdin, STDIN_FILENO);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(saved_stdin);
-        close(saved_stdout);
-        return result;
-    }
-    
-    pid_t pid = fork();
-    if (pid == 0) {
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        
-        if (apply_redirections(cmd->redirections) < 0) {
-            exit(1);
-        }
-        
-        char *exec_path = find_in_path(cmd->name, *env);
-        if (!exec_path) {
-            fprintf(stderr, "minishell: %s: command not found\n", cmd->name);
-            exit(127);
-        }
-        
-        char **envp = env_list_to_environ(*env);
-        if (!envp) {
-            fprintf(stderr, "minishell: failed to convert environment\n");
-            free(exec_path);
-            exit(1);
-        }
-        
-        execve(exec_path, cmd->args, envp);
-        
-        perror("execve");
-        free_environ(envp);
-        free(exec_path);
-        exit(127);
-    } else if (pid > 0) {
-        int status;
-        waitpid(pid, &status, 0);
-        return WIFEXITED(status) ? WEXITSTATUS(status) : 1;
-    } else {
-        perror("fork");
-        return 1;
-    }
+int	execute_command(command_t *cmd, t_env **env)
+{
+	int				i;
+	redirection_t	*r;
+	int				saved_stdin;
+	int				saved_stdout;
+	int				result;
+	pid_t			pid;
+	int				status;
+	char			*expanded;
+	char			*exec_path;
+	char			**envp;
+
+	if (!cmd || !cmd->name)
+		return (1);
+	i = 0;
+	while (i < cmd->arg_count)
+	{
+		expanded = expand_vars(cmd->args[i], *env, 0);
+		printf("expanded: %s\n", expanded);
+		if (expanded)
+		{
+			free(cmd->args[i]);
+			cmd->args[i] = expanded;
+		}
+		i++;
+	}
+	r = cmd->redirections;
+	while (r)
+	{
+		expanded = expand_vars(r->filename, *env, 0);
+		if (expanded)
+		{
+			free(r->filename);
+			r->filename = expanded;
+		}
+		r = r->next;
+	}
+	if (is_builtin(cmd->name))
+	{
+		saved_stdin = dup(STDIN_FILENO);
+		saved_stdout = dup(STDOUT_FILENO);
+		if (apply_redirections(cmd->redirections) < 0)
+		{
+			dup2(saved_stdin, STDIN_FILENO);
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdin);
+			close(saved_stdout);
+			return (1);
+		}
+		result = 1;
+		if (ft_strcmp(cmd->name, "exit") == 0)
+			result = builtin_exit();
+		else if (ft_strcmp(cmd->name, "cd") == 0)
+			result = builtin_cd(cmd->args, *env);
+		else if (ft_strcmp(cmd->name, "pwd") == 0)
+			result = builtin_pwd();
+		else if (ft_strcmp(cmd->name, "echo") == 0)
+			result = builtin_echo(cmd->args);
+		else if (ft_strcmp(cmd->name, "env") == 0)
+			result = builtin_env(*env);
+		else if (ft_strcmp(cmd->name, "export") == 0)
+			result = builtin_export(cmd->args, env);
+		else if (ft_strcmp(cmd->name, "unset") == 0)
+			result = builtin_unset(cmd->args, env);
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdin);
+		close(saved_stdout);
+		return (result);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		if (apply_redirections(cmd->redirections) < 0)
+			exit(1);
+		exec_path = find_in_path(cmd->name, *env);
+		if (!exec_path)
+		{
+			fprintf(stderr, "minishell: %s: command not found\n", cmd->name);
+			exit(127);
+		}
+		envp = env_list_to_environ(*env);
+		if (!envp)
+		{
+			fprintf(stderr, "minishell: failed to convert environment\n");
+			free(exec_path);
+			exit(1);
+		}
+		execve(exec_path, cmd->args, envp);
+		perror("execve");
+		free_environ(envp);
+		free(exec_path);
+		exit(127);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+		else
+			return (1);
+	}
+	else
+	{
+		perror("fork");
+		return (1);
+	}
 }
 
-int execute_ast(ast_node_t *node, t_env **env) {
-    if (!node) return 1;
-    
-    if (node->type == NODE_COMMAND) {
-        return execute_command(node->data.command, env);
-    } else if (node->type == NODE_PIPELINE) {
-        int pipefd[2];
-        if (pipe(pipefd) < 0) { 
-            perror("pipe"); 
-            return 1; 
-        }
-        
-        pid_t left_pid = fork();
-        if (left_pid == 0) {
-            close(pipefd[0]);
-            dup2(pipefd[1], STDOUT_FILENO);
-            close(pipefd[1]);
-            int res = execute_ast(node->data.pipeline.left, env);
-            exit(res);
-        } else if (left_pid < 0) {
-            perror("fork left");
-            close(pipefd[0]);
-            close(pipefd[1]);
-            return 1;
-        }
-        
-        pid_t right_pid = fork();
-        if (right_pid == 0) {
-            close(pipefd[1]);
-            dup2(pipefd[0], STDIN_FILENO);
-            close(pipefd[0]);
-            int res = execute_ast(node->data.pipeline.right, env);
-            exit(res);
-        } else if (right_pid < 0) {
-            perror("fork right");
-            close(pipefd[0]);
-            close(pipefd[1]);
-            kill(left_pid, SIGTERM);
-            waitpid(left_pid, NULL, 0);
-            return 1;
-        }
-        
-        close(pipefd[0]); 
-        close(pipefd[1]);
-        int status1, status2;
-        waitpid(left_pid, &status1, 0);
-        waitpid(right_pid, &status2, 0);
-        return (WIFEXITED(status2) ? WEXITSTATUS(status2) : 1);
-    }
-    return 1;
+int	execute_ast(ast_node_t *node, t_env **env)
+{
+	int		pipefd[2];
+	pid_t	left_pid;
+	pid_t	right_pid;
+	int		status1;
+	int		status2;
+
+	if (!node)
+		return (1);
+	if (node->type == NODE_COMMAND)
+		return (execute_command(node->data.command, env));
+	else if (node->type == NODE_PIPELINE)
+	{
+		if (pipe(pipefd) < 0)
+		{
+			perror("pipe");
+			return (1);
+		}
+		left_pid = fork();
+		if (left_pid == 0)
+		{
+			close(pipefd[0]);
+			dup2(pipefd[1], STDOUT_FILENO);
+			close(pipefd[1]);
+			exit(execute_ast(node->data.pipeline.left, env));
+		}
+		else if (left_pid < 0)
+		{
+			perror("fork left");
+			close(pipefd[0]);
+			close(pipefd[1]);
+			return (1);
+		}
+		right_pid = fork();
+		if (right_pid == 0)
+		{
+			close(pipefd[1]);
+			dup2(pipefd[0], STDIN_FILENO);
+			close(pipefd[0]);
+			exit(execute_ast(node->data.pipeline.right, env));
+		}
+		else if (right_pid < 0)
+		{
+			perror("fork right");
+			close(pipefd[0]);
+			close(pipefd[1]);
+			kill(left_pid, SIGTERM);
+			waitpid(left_pid, NULL, 0);
+			return (1);
+		}
+		close(pipefd[0]);
+		close(pipefd[1]);
+		waitpid(left_pid, &status1, 0);
+		waitpid(right_pid, &status2, 0);
+		if (WIFEXITED(status2))
+			return (WEXITSTATUS(status2));
+		return (1);
+	}
+	return (1);
 }
 
 int ft_work_parse_execute(char *line, t_env **env)
@@ -348,75 +371,120 @@ static int is_var_char(char c) {
     return (c == '_' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'));
 }
 
-char *expand_vars(const char *input, t_env *env, int last_status) {
-    if (!input) return NULL;
+char *expand_vars(const char *input, t_env *env, int last_status)
+{
+    size_t len;
+    size_t result_size;
+    char *result;
+    size_t ri;
+    int in_single;
+    int in_double;
+    size_t i;
     
-    size_t len = ft_strlen(input);
-    size_t result_size = len * 2 + 1;
-    char *result = malloc(result_size);
-    if (!result) return NULL;
+    if (!input)
+        return (NULL);
     
-    size_t ri = 0;
-    int in_single = 0, in_double = 0;
-
-    for (size_t i = 0; i < len; ++i) {
-        if (ri + 256 > result_size) {
+    len = ft_strlen(input);
+    result_size = len * 2 + 1;
+    result = malloc(result_size);
+    if (!result)
+        return (NULL);
+    
+    ri = 0;
+    in_single = 0;
+    in_double = 0;
+    i = 0;
+    
+    while (i < len)
+    {
+        if (ri + 256 > result_size)
+        {
+            size_t old_size = result_size;
+            char *new_result;
             result_size *= 2;
-            char *new_result = realloc(result, result_size);
-            if (!new_result) {
+            new_result = ft_realloc(result, old_size, result_size);
+            if (!new_result)
+            {
                 free(result);
-                return NULL;
+                return (NULL);
             }
             result = new_result;
         }
-
-        if (input[i] == '\'' && !in_double) {
+        
+        if (input[i] == '\'' && !in_double)
             in_single = !in_single;
-            result[ri++] = input[i];
-        } else if (input[i] == '\"' && !in_single) {
+        else if (input[i] == '\"' && !in_single)
             in_double = !in_double;
-            result[ri++] = input[i];
-        } else if (input[i] == '$' && !in_single) {
-            if (i + 1 < len && input[i+1] == '?') {
-                ri += sprintf(result + ri, "%d", last_status);
+        else if (input[i] == '$' && !in_single)
+        {
+            if (i + 1 < len && input[i + 1] == '?')
+            {
+                ri += ft_itoa_to_buffer(result + ri, last_status);
                 i++;
-            } else if (i + 1 < len && input[i+1] == '{') {
-                size_t j = i+2, start = j;
-                while (j < len && input[j] != '}') j++;
-                if (j < len && input[j] == '}') {
-                    char var[256];
-                    size_t var_len = j - start;
-                    if (var_len < sizeof(var)) {
-                        strncpy(var, input+start, var_len);
+            }
+            // Handle ${VAR} syntax
+            else if (i + 1 < len && input[i + 1] == '{')
+            {
+                size_t j = i + 2;
+                size_t start = j;
+                char var[256];
+                size_t var_len;
+                
+                while (j < len && input[j] != '}')
+                    j++;
+                
+                if (j < len && input[j] == '}')
+                {
+                    var_len = j - start;
+                    if (var_len < sizeof(var))
+                    {
+                        ft_strncpy_safe(var, input + start, var_len);
                         var[var_len] = 0;
-                        const char *val = get_env_value(var, env);
-                        ri += sprintf(result + ri, "%s", val);
+                        ri += ft_strcpy_to_buffer(result + ri, get_env_value(var, env));
                     }
                     i = j;
-                } else {
+                }
+                else
+                {
                     result[ri++] = input[i];
                 }
-            } else if (i + 1 < len && is_var_char(input[i+1]) && (input[i+1] < '0' || input[i+1] > '9')) {
-                size_t j = i+1, start = j;
-                while (j < len && is_var_char(input[j])) j++;
+            }
+            // Handle $VAR syntax (not digit as first char)
+            else if (i + 1 < len && is_var_char(input[i + 1])
+                    && (input[i + 1] < '0' || input[i + 1] > '9'))
+            {
+                size_t j = i + 1;
+                size_t start = j;
                 char var[256];
-                size_t var_len = j - start;
-                if (var_len < sizeof(var)) {
-                    strncpy(var, input+start, var_len);
+                size_t var_len;
+                
+                while (j < len && is_var_char(input[j]))
+                    j++;
+                
+                var_len = j - start;
+                if (var_len < sizeof(var))
+                {
+                    ft_strncpy_safe(var, input + start, var_len);
                     var[var_len] = 0;
-                    const char *val = get_env_value(var, env);
-                    ri += sprintf(result + ri, "%s", val);
+                    ri += ft_strcpy_to_buffer(result + ri, get_env_value(var, env));
                 }
-                i = j-1;
-            } else {
+                i = j - 1;
+            }
+            else
+            {
                 result[ri++] = input[i];
             }
-        } else {
+        }
+        else
+        {
             result[ri++] = input[i];
         }
+        i++;
     }
+    
     result[ri] = 0;
-    return result;
+    printf("debug: result %s\n", result);
+    return (result);
 }
 
 int is_builtin(const char *name) {

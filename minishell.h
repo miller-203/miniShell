@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/15 15:28:58 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/17 19:42:40 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,11 @@ char    *ft_strdup(const char *s);
 // New: parsing step
 ast_node_t *parse_input_line(const char *line);
 
-// New: built-in and heredoc helpers
+// New: built-in and helpers
+int ft_itoa_to_buffer(char *buffer, int num);
+int ft_strcpy_to_buffer(char *dest, const char *src);
+void ft_strncpy_safe(char *dest, const char *src, size_t n);
+char *ft_realloc(char *ptr, size_t old_size, size_t new_size);
 int export_builtin(char **args, t_env **env);
 int unset_builtin(char **args, t_env **env);
 t_env *set_env_var(t_env *env, const char *key, const char *value);
