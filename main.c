@@ -89,7 +89,7 @@ int main(int argc, char **argv, char **env)
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, SIG_IGN);
 
-    t_env *copy_env;
+    t_env *copy_env = NULL;
     ft_copy_env(env, &copy_env);
     
     while (1)
