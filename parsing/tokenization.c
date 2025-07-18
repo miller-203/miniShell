@@ -83,8 +83,7 @@ token_t *tokenize(char *input)
         {
             int start = i;
             while (input[i] && input[i] != ' ' && input[i] != '\t' &&
-                   input[i] != '|' && input[i] != '<' && input[i] != '>' &&
-                   input[i] != '"' && input[i] != '\'')
+                   input[i] != '|' && input[i] != '<' && input[i] != '>')
                 i++;
 
             tokens[token_count].type = "WORD";
