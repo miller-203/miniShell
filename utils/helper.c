@@ -1,33 +1,46 @@
 #include "../minishell.h"
 
+static int	ft_itoa_to_temp(int num, char *temp)
+{
+	int	i;
+	int	n;
+
+	i = 0;
+	n = num;
+	if (n < 0)
+		n = -n;
+	while (n > 0)
+	{
+		temp[i] = '0' + (n % 10);
+		i++;
+		n /= 10;
+	}
+	return (i);
+}
+
 int	ft_itoa_to_buffer(char *buffer, int num)
 {
 	char	temp[32];
-	int		i = 0;
-	int		len = 0;
-	int		is_negative = 0;
-	int		n = num;
+	int		i;
+	int		len;
+	int		is_negative;
 
+	i = 0;
+	len = 0;
+	is_negative = 0;
 	if (num == 0)
 	{
 		buffer[0] = '0';
 		buffer[1] = '\0';
 		return (1);
 	}
-	if (n < 0)
-	{
+	if (num < 0)
 		is_negative = 1;
-		n = -n;
-	}
-	while (n > 0)
-	{
-		temp[i++] = '0' + (n % 10);
-		n /= 10;
-	}
+	i = ft_itoa_to_temp(num, temp);
 	if (is_negative)
 		buffer[len++] = '-';
 	while (i > 0)
-		buffer[len++] = temp[--i];
+		buffer[++len - 1] = temp[--i];
 	buffer[len] = '\0';
 	return (len);
 }
