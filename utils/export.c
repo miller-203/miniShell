@@ -24,10 +24,11 @@ t_env *set_env_var(t_env *env, const char *key, const char *value) {
 
 static char *strip_quotes(const char *val) {
     size_t len = ft_strlen(val);
+    printf("len: %zu\n", len);
     if (len >= 2 && ((val[0] == '"' && val[len-1] == '"') || (val[0] == '\'' && val[len-1] == '\''))) {
         char *res = malloc(len - 1);
         if (!res) return NULL;
-        strncpy(res, val + 1, len - 2);
+        ft_strncpy_safe(res, val + 1, len - 2);
         res[len - 2] = '\0';
         printf("res: %s\n", res);
         return res;
@@ -46,10 +47,12 @@ int export_builtin(char **args, t_env **env) {
         return 0;
     }
     while (args[i]) {
+        printf("args[%d]: %s\n", i , args[i]);
         char *eq = ft_strchr(args[i], '=');
         if (!eq) { i++; continue; }
         *eq = 0;
         char *val = strip_quotes(eq + 1);
+        printf("val: %s\n", val);
         *env = set_env_var(*env, args[i], val);
         free(val);
         *eq = '=';

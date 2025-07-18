@@ -383,7 +383,6 @@ char *expand_vars(const char *input, t_env *env, int last_status)
     
     if (!input)
         return (NULL);
-    
     len = ft_strlen(input);
     result_size = len * 2 + 1;
     result = malloc(result_size);
