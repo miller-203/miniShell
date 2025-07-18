@@ -5,7 +5,8 @@ MINISHELL 🐚,,,,,,,,,
 Les comportements présents dans cet Excel ne sont pas tous a gérer dans la Mandatory du projet Minishell !
 Ne vous mettez pas la pression pour essayer de tous les gérer !
 Vérifiez juste pour ces cas non gerables s'ils ne Segfault pas, ou n'effectuent pas un comportement suspect !
-Utilisez votre bon sens pour exploiter au mieux ce document et faire un Minishell pas trop ambitieux, selon votre situation du projet.
+Utilisez votre bon sens pour git filter-branch.
+loiter au mieux ce document et faire un Minishell pas trop ambitieux, selon votre situation du projet.
 (Par contre, si vous etes chauds pour tout gérer, GG à vous !)
 
 

@@ -104,19 +104,19 @@ int apply_redirections(redirection_t *redir) {
         int fd;
         if (redir->type == REDIR_INPUT) {
             fd = open(redir->filename, O_RDONLY);
-            if (fd < 0) { perror("open input"); return -1; }
+            if (fd < 0) { print_exec_error("open input", NULL); return -1; }
             dup2(fd, STDIN_FILENO); close(fd);
         } else if (redir->type == REDIR_OUTPUT) {
             fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (fd < 0) { perror("open output"); return -1; }
+            if (fd < 0) { print_exec_error("open output", NULL); return -1; }
             dup2(fd, STDOUT_FILENO); close(fd);
         } else if (redir->type == REDIR_APPEND) {
             fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-            if (fd < 0) { perror("open append"); return -1; }
+            if (fd < 0) { print_exec_error("open append", NULL); return -1; }
             dup2(fd, STDOUT_FILENO); close(fd);
         } else if (redir->type == REDIR_HEREDOC) {
             fd = heredoc(redir->filename);
-            if (fd < 0) { fprintf(stderr, "heredoc failed\n"); return -1; }
+            if (fd < 0) { print_exec_error("heredoc", "failed"); return -1; }
             dup2(fd, STDIN_FILENO); close(fd);
         }
         redir = redir->next;
@@ -183,7 +183,7 @@ int	execute_command(command_t *cmd, t_env **env)
 	while (i < cmd->arg_count)
 	{
 		expanded = expand_vars(cmd->args[i], *env, 0);
-		printf("expanded: %s\n", expanded);
+		// printf("expanded: %s\n", expanded);
 		if (expanded)
 		{
 			free(cmd->args[i]);
@@ -256,7 +256,7 @@ int	execute_command(command_t *cmd, t_env **env)
 			exit(1);
 		}
 		execve(exec_path, cmd->args, envp);
-		perror("execve");
+		print_exec_error("execve", NULL);
 		free_environ(envp);
 		free(exec_path);
 		exit(127);
@@ -271,7 +271,7 @@ int	execute_command(command_t *cmd, t_env **env)
 	}
 	else
 	{
-		perror("fork");
+		print_exec_error("fork", NULL);
 		return (1);
 	}
 }
@@ -292,7 +292,7 @@ int	execute_ast(ast_node_t *node, t_env **env)
 	{
 		if (pipe(pipefd) < 0)
 		{
-			perror("pipe");
+			print_exec_error("pipe", NULL);
 			return (1);
 		}
 		left_pid = fork();
@@ -305,7 +305,7 @@ int	execute_ast(ast_node_t *node, t_env **env)
 		}
 		else if (left_pid < 0)
 		{
-			perror("fork left");
+			print_exec_error("fork left", NULL);
 			close(pipefd[0]);
 			close(pipefd[1]);
 			return (1);
@@ -320,7 +320,7 @@ int	execute_ast(ast_node_t *node, t_env **env)
 		}
 		else if (right_pid < 0)
 		{
-			perror("fork right");
+			print_exec_error("fork right", NULL);
 			close(pipefd[0]);
 			close(pipefd[1]);
 			kill(left_pid, SIGTERM);
@@ -482,7 +482,7 @@ char *expand_vars(const char *input, t_env *env, int last_status)
     }
     
     result[ri] = 0;
-    printf("debug: result %s\n", result);
+    // printf("debug: result %s\n", result);
     return (result);
 }
 

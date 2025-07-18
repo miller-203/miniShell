@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/17 19:42:40 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/18 15:27:10 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,5 @@ int builtin_env(t_env *env);
 int builtin_export(char **args, t_env **env);
 int builtin_unset(char **args, t_env **env);
 int builtin_exit(void);
+void print_exec_error(const char *context, const char *detail);
 #endif

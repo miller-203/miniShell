@@ -1,4 +1,7 @@
 #include "../minishell.h"
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
 int ft_ft_strlen_array(char **str)
 {
@@ -51,3 +54,26 @@ char *ft_strdup(const char *s) {
     return dup;
 }
 
+void print_exec_error(const char *context, const char *detail) {
+    if (detail && detail[0]) {
+        write(2, "minishell: ", 11);
+        if (context)
+            write(2, context, ft_strlen(context));
+        write(2, ": ", 2);
+        write(2, detail, ft_strlen(detail));
+        write(2, "\n", 1);
+    } else if (errno) {
+        write(2, "minishell: ", 11);
+        if (context)
+            write(2, context, ft_strlen(context));
+        write(2, ": ", 2);
+        const char *errstr = strerror(errno);
+        write(2, errstr, ft_strlen(errstr));
+        write(2, "\n", 1);
+    } else {
+        write(2, "minishell: ", 11);
+        if (context)
+            write(2, context, ft_strlen(context));
+        write(2, ": error\n", 8);
+    }
+}

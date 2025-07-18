@@ -68,7 +68,7 @@ token_t *tokenize(char *input)
 
             if (!input[i])
             {
-                fprintf(stderr, "minishell: syntax error: unclosed quote\n");
+                print_exec_error("syntax error", "unclosed quote");
                 tokens[token_count].type = "WORD";
                 tokens[token_count].value = strndup(&input[start], i - start);
             }

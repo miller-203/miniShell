@@ -21,7 +21,7 @@ ast_node_t *parse_command(parser_t *parser)
             if (parser->current >= parser->token_count ||
                 strcmp(parser->tokens[parser->current].type, "WORD") != 0)
             {
-                fprintf(stderr, "minishell: syntax error: expected filename after redirection\n");
+                print_exec_error("syntax error", "expected filename after redirection");
                 free(cmd);
                 return NULL;
             }

@@ -1,6 +1,7 @@
 #include "../minishell.h"
 
-int builtin_exit(void) {
-    exit(0);
-    return 0;
-} 
+int	builtin_exit(void)
+{
+	exit(0);
+	return (0);
+}
