@@ -1,6 +1,4 @@
 #include "../minishell.h"
-#include <unistd.h>
-#include <fcntl.h>
 
 static int	handle_redir_input(redirection_t *redir)
 {

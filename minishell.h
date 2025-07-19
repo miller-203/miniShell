@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/18 23:17:19 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/19 04:38:16 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,5 +149,10 @@ int				handle_brace_var(const char *input, size_t i, size_t len,
 				char *result, int ri, t_env *env, size_t *out_i);
 int				handle_simple_var(const char *input, size_t i, size_t len,
 				char *result, int ri, t_env *env, size_t *out_i);
+int				fork_left_process(ast_node_t *node, t_env **env, int *pipefd);
+int				fork_right_process(ast_node_t *node, t_env **env, int *pipefd, int left_pid);
+int				wait_pipeline_children(int left_pid, int right_pid);
+int				exec_pipeline_left(ast_node_t *node, t_env **env, int *pipefd);
+int				exec_pipeline_right(ast_node_t *node, t_env **env, int *pipefd);
 
 #endif

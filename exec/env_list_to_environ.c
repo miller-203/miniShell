@@ -1,7 +1,4 @@
 #include "../minishell.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 static int	env_count(t_env *env)
 {
