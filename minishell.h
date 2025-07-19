@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/19 04:38:16 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/19 15:15:23 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ size_t			ft_strlen(const char *str);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *s);
 char			*ft_strcpy(char *dest, const char *src);
-ast_node_t		*parse_input_line(const char *line);
+ast_node_t		*parse_input_line(const char *line, t_env *env);
 
 /* Builtins and helpers */
 int				ft_itoa_to_buffer(char *buffer, int num);

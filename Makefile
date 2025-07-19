@@ -6,7 +6,7 @@
 #    By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/20 14:24:27 by yolaidi-          #+#    #+#              #
-#    Updated: 2025/07/19 04:38:23 by abdelilah        ###   ########.fr        #
+#    Updated: 2025/07/19 14:55:43 by abdelilah        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,18 +26,19 @@ SRCS = main.c parsing/tokenization.c parsing/parsing.c parsing/free_args.c \
 .SECONDARY:
 
 all: $(NAME)
+	@$(RM) $(OBJS)
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $(NAME) $(FRAMEWORKS)
+	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) $(FRAMEWORKS)
 
 %.o: %.c minishell.h
-	$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	${RM} $(OBJS)
+	@${RM} $(OBJS)
 
 fclean: clean
-	${RM} $(NAME)
+	@${RM} $(NAME)
 
 re: fclean all
 

@@ -51,7 +51,7 @@ void print_ast(ast_node_t *node, int depth)
 
 int	ft_work_parse_execute(char *line, t_env **env)
 {
-    ast_node_t *ast = parse_input_line(line);
+    ast_node_t *ast = parse_input_line(line, *env);
     if (!ast)
         return 1;
     print_ast(ast, 0);

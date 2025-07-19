@@ -76,7 +76,7 @@ char	*expand_vars(const char *input, t_env *env, int last_status)
 		update_quote_state(input, i, &in_single, &in_double);
 		if (input[i] == '$' && !in_single)
 			ri = expand_var(input, i, len, result, ri, env, last_status, &i);
-		else if (!(input[i] == '\'' && !in_double) && !(input[i] == '"' && !in_single))
+		else
 			result[ri++] = input[i];
 		i++;
 	}

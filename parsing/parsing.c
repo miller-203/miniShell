@@ -51,10 +51,17 @@ ast_node_t *parse(token_t *tokens)
     return parse_pipeline(&parser);
 }
 
-ast_node_t *parse_input_line(const char *line) {
+ast_node_t *parse_input_line(const char *line, t_env *env) {
     if (!line || !*line)
         return NULL;
-    token_t *tokens = tokenize((char *)line);
+    
+    char *expanded_line = expand_vars(line, env, 0);
+    if (!expanded_line)
+        return NULL;
+
+    token_t *tokens = tokenize(expanded_line);
+    free(expanded_line);
+    
     if (!tokens)
         return NULL;
     int j = 0;

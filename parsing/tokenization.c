@@ -82,9 +82,57 @@ token_t *tokenize(char *input)
         else
         {
             int start = i;
-            while (input[i] && input[i] != ' ' && input[i] != '\t' &&
-                   input[i] != '|' && input[i] != '<' && input[i] != '>')
-                i++;
+            
+            // Check if this looks like an assignment (contains =)
+            int has_equals = 0;
+            size_t temp_i = i;
+            while (temp_i < strlen(input) && input[temp_i] != ' ' && input[temp_i] != '\t' &&
+                   input[temp_i] != '|' && input[temp_i] != '<' && input[temp_i] != '>')
+            {
+                if (input[temp_i] == '=')
+                {
+                    has_equals = 1;
+                    break;
+                }
+                temp_i++;
+            }
+            
+            if (has_equals)
+            {
+                // Handle assignment: read until = and then check for quoted value
+                while (input[i] && input[i] != '=')
+                    i++;
+                
+                if (input[i] == '=')
+                {
+                    i++; // Skip the =
+                    
+                    // Check if there's a quoted value immediately after =
+                    if (input[i] == '"' || input[i] == '\'')
+                    {
+                        char quote = input[i++];
+                        while (input[i] && input[i] != quote)
+                            i++;
+                        if (input[i]) // Found closing quote
+                            i++;
+                        // If no closing quote, stop at current position
+                    }
+                    else
+                    {
+                        // No quoted value, read until space or special character
+                        while (input[i] && input[i] != ' ' && input[i] != '\t' &&
+                               input[i] != '|' && input[i] != '<' && input[i] != '>')
+                            i++;
+                    }
+                }
+            }
+            else
+            {
+                // Normal word: read until space or special character
+                while (input[i] && input[i] != ' ' && input[i] != '\t' &&
+                       input[i] != '|' && input[i] != '<' && input[i] != '>')
+                    i++;
+            }
 
             tokens[token_count].type = "WORD";
             tokens[token_count].value = strndup(&input[start], i - start);
