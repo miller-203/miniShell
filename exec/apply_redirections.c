@@ -18,7 +18,6 @@ static int	handle_redir_input(redirection_t *redir)
 static int	handle_redir_output(redirection_t *redir)
 {
 	int	fd;
-
 	fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 	{

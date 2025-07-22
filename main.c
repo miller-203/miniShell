@@ -51,13 +51,13 @@ void print_ast(ast_node_t *node, int depth)
 
 int	ft_work_parse_execute(char *line, t_env **env)
 {
-    ast_node_t *ast = parse_input_line(line, *env);
-    if (!ast)
-        return 1;
-    print_ast(ast, 0);
-    int status = execute_ast(ast, env);
-    free_ast(ast);
-    return status;
+	ast_node_t *ast = parse_input_line(line);
+	if (!ast)
+		return (1);
+	print_ast(ast, 0);
+	int status = execute_ast(ast, env);
+	free_ast(ast);
+	return (status);
 }
 
 void sigint_handler(int signo)
@@ -70,13 +70,13 @@ void sigint_handler(int signo)
 }
 
 int is_builtin(const char *name) {
-    return (strcmp(name, "cd") == 0 ||
-            strcmp(name, "pwd") == 0 ||
-            strcmp(name, "echo") == 0 ||
-            strcmp(name, "env") == 0 ||
-            strcmp(name, "export") == 0 ||
-            strcmp(name, "unset") == 0 ||
-            strcmp(name, "exit") == 0);
+    return (ft_strcmp(name, "cd") == 0 ||
+            ft_strcmp(name, "pwd") == 0 ||
+            ft_strcmp(name, "echo") == 0 ||
+            ft_strcmp(name, "env") == 0 ||
+            ft_strcmp(name, "export") == 0 ||
+            ft_strcmp(name, "unset") == 0 ||
+            ft_strcmp(name, "exit") == 0);
 }
 
 int main(int argc, char **argv, char **env)

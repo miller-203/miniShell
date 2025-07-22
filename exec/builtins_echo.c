@@ -1,22 +1,25 @@
 #include "../minishell.h"
 
-int	builtin_echo(char **args)
+int	builtin_echo(command_t *cmd)
 {
-	int	nflag;
-	int	i;
+	int nflag = 0;
+	int i = 1;
+	int printed = 0;
 
-	nflag = 0;
-	i = 1;
-	if (args[1] && ft_strcmp(args[1], "-n") == 0)
+	if (cmd->args[1] && ft_strcmp(cmd->args[1], "-n") == 0)
 	{
 		nflag = 1;
 		i = 2;
 	}
-	while (args[i])
+	while (i < cmd->arg_count)
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
+		if (cmd->args[i][0] != '\0' || cmd->was_quoted[i])
+		{
+			if (printed)
+				printf(" ");
+			printf("%s", cmd->args[i]);
+			printed = 1;
+		}
 		i++;
 	}
 	if (!nflag)

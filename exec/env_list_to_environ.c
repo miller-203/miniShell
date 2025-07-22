@@ -9,7 +9,7 @@ static int	env_count(t_env *env)
 	tmp = env;
 	while (tmp)
 	{
-		if (tmp->key)
+		if (tmp->key && tmp->exported && tmp->value)
 			count++;
 		tmp = tmp->next;
 	}
@@ -21,10 +21,8 @@ static char	*env_to_str(const char *key, const char *value)
 	size_t	len;
 	char	*str;
 
-	if (!key)
+	if (!key || !value)
 		return (NULL);
-	if (!value)
-		value = "";
 	len = ft_strlen(key) + ft_strlen(value) + 2;
 	str = malloc(len);
 	if (!str)
@@ -58,18 +56,17 @@ char	**env_list_to_environ(t_env *env)
 		return (NULL);
 	tmp = env;
 	i = 0;
-	while (tmp && i < count)
+	while (tmp)
 	{
-		if (!tmp->key)
+		if (tmp->key && tmp->exported && tmp->value)
 		{
-			tmp = tmp->next;
-			continue;
+			environ[i] = env_to_str(tmp->key, tmp->value);
+			if (!environ[i])
+				return (free_environ_partial(environ, i), NULL);
+			i++;
 		}
-		environ[i] = env_to_str(tmp->key, tmp->value);
-		if (!environ[i])
-			return (free_environ_partial(environ, i), NULL);
-		i++;
 		tmp = tmp->next;
 	}
-	return (environ[i] = NULL, environ);
+	environ[i] = NULL;
+	return (environ);
 }

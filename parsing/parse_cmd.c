@@ -5,6 +5,12 @@ ast_node_t *parse_command(parser_t *parser)
     command_t *cmd = create_command();
     if (!cmd)
         return NULL;
+    cmd->was_quoted = malloc(sizeof(int) * MAX_ARGS);
+    if (!cmd->was_quoted)
+    {
+        free(cmd);
+        return NULL;
+    }
 
     while (parser->current < parser->token_count)
     {
@@ -53,6 +59,7 @@ ast_node_t *parse_command(parser_t *parser)
             }
 
             cmd->args[cmd->arg_count] = ft_strdup(token->value);
+            cmd->was_quoted[cmd->arg_count] = token->was_quoted;
 
             if (cmd->arg_count == 0)
                 cmd->name = ft_strdup(token->value);

@@ -7,7 +7,7 @@ ast_node_t *parse_pipeline(parser_t *parser)
         return NULL;
 
     while (parser->current < parser->token_count &&
-           strcmp(parser->tokens[parser->current].type, "PIPE") == 0)
+           ft_strcmp(parser->tokens[parser->current].type, "PIPE") == 0)
     {
         parser->current++;
 
@@ -51,17 +51,11 @@ ast_node_t *parse(token_t *tokens)
     return parse_pipeline(&parser);
 }
 
-ast_node_t *parse_input_line(const char *line, t_env *env) {
+ast_node_t *parse_input_line(const char *line) {
     if (!line || !*line)
         return NULL;
-    
-    char *expanded_line = expand_vars(line, env, 0);
-    if (!expanded_line)
-        return NULL;
 
-    token_t *tokens = tokenize(expanded_line);
-    free(expanded_line);
-    
+    token_t *tokens = tokenize((char *)line);    
     if (!tokens)
         return NULL;
     int j = 0;

@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/19 15:15:23 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/22 19:01:06 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_token
 {
 	char	*type;
 	char	*value;
+	int		was_quoted;
 }			token_t;
 
 typedef enum e_node_type
@@ -62,6 +63,7 @@ typedef struct s_command
 	char			**args;
 	int				arg_count;
 	redirection_t	*redirections;
+	int				*was_quoted;
 }			command_t;
 
 typedef struct s_ast_node
@@ -89,6 +91,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	int				exported;
 	struct s_env	*next;
 }			t_env;
 
@@ -114,7 +117,7 @@ size_t			ft_strlen(const char *str);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *s);
 char			*ft_strcpy(char *dest, const char *src);
-ast_node_t		*parse_input_line(const char *line, t_env *env);
+ast_node_t		*parse_input_line(const char *line);
 
 /* Builtins and helpers */
 int				ft_itoa_to_buffer(char *buffer, int num);
@@ -123,14 +126,14 @@ void			ft_strncpy_safe(char *dest, const char *src, size_t n);
 char			*ft_realloc(char *ptr, size_t old_size, size_t new_size);
 int				export_builtin(char **args, t_env **env);
 int				unset_builtin(char **args, t_env **env);
-t_env			*set_env_var(t_env *env, const char *key, const char *value);
+t_env			*set_env_var(t_env *env, const char *key, const char *value, int exported);
 int				heredoc(const char *delimiter);
 char			*expand_vars(const char *input, t_env *env, int last_status);
 int				ft_strcmp(const char *s1, const char *s2);
 int				is_builtin(const char *name);
 int				builtin_cd(char **args, t_env *env);
 int				builtin_pwd(void);
-int				builtin_echo(char **args);
+int				builtin_echo(command_t *cmd);
 int				builtin_env(t_env *env);
 int				builtin_export(char **args, t_env **env);
 int				builtin_unset(char **args, t_env **env);
@@ -145,8 +148,6 @@ char			*find_in_path(const char *cmd, t_env *env);
 const char		*get_env_value(const char *key, t_env *env);
 int				is_var_char(char c);
 int				handle_dollar_question(char *result, int ri, int last_status);
-int				handle_brace_var(const char *input, size_t i, size_t len,
-				char *result, int ri, t_env *env, size_t *out_i);
 int				handle_simple_var(const char *input, size_t i, size_t len,
 				char *result, int ri, t_env *env, size_t *out_i);
 int				fork_left_process(ast_node_t *node, t_env **env, int *pipefd);
@@ -154,5 +155,6 @@ int				fork_right_process(ast_node_t *node, t_env **env, int *pipefd, int left_p
 int				wait_pipeline_children(int left_pid, int right_pid);
 int				exec_pipeline_left(ast_node_t *node, t_env **env, int *pipefd);
 int				exec_pipeline_right(ast_node_t *node, t_env **env, int *pipefd);
+char 			*strip_quotes(const char *val);
 
 #endif
