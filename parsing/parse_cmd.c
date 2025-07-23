@@ -25,9 +25,12 @@ ast_node_t *parse_command(parser_t *parser)
             parser->current++;
 
             if (parser->current >= parser->token_count ||
-                strcmp(parser->tokens[parser->current].type, "WORD") != 0)
+                ft_strcmp(parser->tokens[parser->current].type, "WORD") != 0)
             {
                 print_exec_error("syntax error", "expected filename after redirection");
+                free(cmd->was_quoted);
+                free(cmd->args);
+                free(cmd->name);
                 free(cmd);
                 return NULL;
             }
