@@ -51,6 +51,7 @@ static void	append_node(t_env **env, char *key, char *value)
 	node->next = NULL;
     node->key = key;
 	node->value = value;
+    node->exported = 1;
 	if (*env == NULL)
 		*env = node;
 	else

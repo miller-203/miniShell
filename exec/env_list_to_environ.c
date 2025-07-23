@@ -45,12 +45,14 @@ static void	free_environ_partial(char **environ, int i)
 
 char	**env_list_to_environ(t_env *env)
 {
-	int		count;
-	char	**environ;
+	int		count = 0;
+	char	**environ = NULL;
 	t_env	*tmp;
 	int		i;
 
 	count = env_count(env);
+	if (count == 0)
+		return (NULL);	
 	environ = malloc(sizeof(char *) * (count + 1));
 	if (!environ)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/22 19:01:06 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/23 14:35:25 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,5 +156,4 @@ int				wait_pipeline_children(int left_pid, int right_pid);
 int				exec_pipeline_left(ast_node_t *node, t_env **env, int *pipefd);
 int				exec_pipeline_right(ast_node_t *node, t_env **env, int *pipefd);
 char 			*strip_quotes(const char *val);
-
 #endif

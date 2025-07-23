@@ -9,7 +9,6 @@ void ft_free_args(char **args)
         i++;
     }
     free(args);
-    args = NULL;
 }
 
 void free_tokens(token_t *tokens)
@@ -30,7 +29,7 @@ void free_ast(ast_node_t *node)
 {
     if (!node)
         return;
-
+    
     if (node->type == NODE_COMMAND)
     {
         if (node->data.command)
@@ -43,6 +42,9 @@ void free_ast(ast_node_t *node)
                 i++;
             }
             free(node->data.command->args);
+            
+            free(node->data.command->was_quoted);
+            
             redirection_t *redir = node->data.command->redirections;
             while (redir)
             {
@@ -59,6 +61,5 @@ void free_ast(ast_node_t *node)
         free_ast(node->data.pipeline.left);
         free_ast(node->data.pipeline.right);
     }
-
     free(node);
 }

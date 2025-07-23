@@ -117,6 +117,7 @@ static int	fork_and_execute(command_t *cmd, t_env *env)
 	char *expanded_name = expand_vars(cmd->name, env, 0);
     if (!expanded_name)
         return (1);
+		free(cmd->name);
     cmd->name = expanded_name;
     expand_command_args(cmd, env);
 	pid = fork();
@@ -136,12 +137,17 @@ static int	fork_and_execute(command_t *cmd, t_env *env)
 
 int	execute_command(command_t *cmd, t_env **env)
 {
+	int	i;
+
 	if (!cmd || !cmd->name)
 		return (1);
 	expand_command_args(cmd, *env);
 	expand_redirections(cmd->redirections, *env);
-	for (int i = 0; i < cmd->arg_count; i++) {
+	i = 0;
+	while (i < cmd->arg_count)
+	{
 		printf("cmd->args[%d]: %s\n", i, cmd->args[i]);
+		i++;
 	}
 	if (is_builtin(cmd->name))
 		return (handle_builtin_execution(cmd, env));

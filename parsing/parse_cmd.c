@@ -50,7 +50,7 @@ ast_node_t *parse_command(parser_t *parser)
             continue;
         }
 
-        if (strcmp(token->type, "WORD") == 0)
+        if (ft_strcmp(token->type, "WORD") == 0)
         {
             if (cmd->arg_count >= MAX_ARGS - 1)
             {
