@@ -45,20 +45,15 @@ int	ft_itoa_to_buffer(char *buffer, int num)
 	return (len);
 }
 
-int	ft_strcpy_to_buffer(char *dest, const char *src)
+int ft_strcpy_to_buffer(char *dest, const char *src)
 {
-	int	len;
-
-	if (!src)
-		src = "";
-	len = 0;
-	while (src[len])
-	{
-		dest[len] = src[len];
-		len++;
-	}
-	dest[len] = '\0';
-	return (len);
+    int count = 0;
+    while (*src)
+    {
+        *dest++ = *src++;
+        count++;
+    }
+    return count;
 }
 
 void	ft_strncpy_safe(char *dest, const char *src, size_t n)

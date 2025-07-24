@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/23 14:35:25 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/24 13:57:49 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,8 @@ const char		*get_env_value(const char *key, t_env *env);
 int				is_var_char(char c);
 int				handle_dollar_question(char *result, int ri, int last_status);
 int				handle_simple_var(const char *input, size_t i, size_t len,
-				char *result, int ri, t_env *env, size_t *out_i);
+				char **result, size_t *result_size, int ri, t_env *env, size_t *out_i);
+int				ensure_result_capacity(char **result, size_t *result_size, size_t needed_space);
 int				fork_left_process(ast_node_t *node, t_env **env, int *pipefd);
 int				fork_right_process(ast_node_t *node, t_env **env, int *pipefd, int left_pid);
 int				wait_pipeline_children(int left_pid, int right_pid);

@@ -8,7 +8,6 @@ int exec_pipeline(ast_node_t *node, t_env **env)
 
     if (pipe(pipefd) < 0)
         return (print_exec_error("pipe", NULL), 1);
-    
     left_pid = fork_left_process(node, env, pipefd);
     if (left_pid < 0)
         return (1);

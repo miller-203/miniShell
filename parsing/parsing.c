@@ -58,12 +58,12 @@ ast_node_t *parse_input_line(const char *line) {
     token_t *tokens = tokenize((char *)line);    
     if (!tokens)
         return NULL;
-    int j = 0;
-    while (tokens[j].type)
-    {
-        printf("Token %d: Type: %s, Value: %s\n", j, tokens[j].type, tokens[j].value);
-        j++;
-    }
+    // int j = 0;
+    // while (tokens[j].type)
+    // {
+    //     printf("Token %d: Type: %s, Value: %s\n", j, tokens[j].type, tokens[j].value);
+    //     j++;
+    // }
     ast_node_t *ast = parse(tokens);
     free_tokens(tokens);
     return ast;

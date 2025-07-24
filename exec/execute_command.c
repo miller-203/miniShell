@@ -1,4 +1,5 @@
 #include "../minishell.h"
+
 static void	expand_command_args(command_t *cmd, t_env *env)
 {
 	int		i;
@@ -63,19 +64,19 @@ static int	handle_builtin_execution(command_t *cmd, t_env **env)
 	int	saved_stdout;
 	int	result;
 
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
+	saved_stdin = dup(0);
+	saved_stdout = dup(1);
 	if (apply_redirections(cmd->redirections) < 0)
 	{
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
+		dup2(saved_stdin, 0);
+		dup2(saved_stdout, 1);
 		close(saved_stdin);
 		close(saved_stdout);
 		return (1);
 	}
 	result = execute_builtin_command(cmd, env);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
+	dup2(saved_stdin, 0);
+	dup2(saved_stdout, 1);
 	close(saved_stdin);
 	close(saved_stdout);
 	return (result);
@@ -137,18 +138,18 @@ static int	fork_and_execute(command_t *cmd, t_env *env)
 
 int	execute_command(command_t *cmd, t_env **env)
 {
-	int	i;
+	// int	i;
 
 	if (!cmd || !cmd->name)
 		return (1);
 	expand_command_args(cmd, *env);
 	expand_redirections(cmd->redirections, *env);
-	i = 0;
-	while (i < cmd->arg_count)
-	{
-		printf("cmd->args[%d]: %s\n", i, cmd->args[i]);
-		i++;
-	}
+	// i = 0;
+	// while (i < cmd->arg_count)
+	// {
+	// 	printf("cmd->args[%d]: %s\n", i, cmd->args[i]);
+	// 	i++;
+	// }
 	if (is_builtin(cmd->name))
 		return (handle_builtin_execution(cmd, env));
 	return (fork_and_execute(cmd, *env));

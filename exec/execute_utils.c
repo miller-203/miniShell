@@ -31,7 +31,7 @@ int	wait_pipeline_children(int left_pid, int right_pid)
 int fork_left_process(ast_node_t *node, t_env **env, int *pipefd)
 {
     int left_pid;
-    
+
     left_pid = fork();
     if (left_pid == 0)
         exec_pipeline_left(node, env, pipefd);
