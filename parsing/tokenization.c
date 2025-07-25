@@ -61,6 +61,9 @@ token_t	*tokenize(char *input)
 				i++;
 			}
 		}
+		// else if (input[i] == '"') {
+		// 	tokens[token_count].was_quoted = 1;
+		// }
 		else
 		{
 			int		start = i;
@@ -109,6 +112,8 @@ token_t	*tokenize(char *input)
 			tokens[token_count].type = "WORD";
 			tokens[token_count].value = strndup(&input[start], i - start);
 			tokens[token_count].was_quoted = 0;
+			if (ft_strchr(tokens[token_count].value, '"') || ft_strchr(tokens[token_count].value, '\''))
+				tokens[token_count].was_quoted = 1;
 		}
 		if (!tokens[token_count].value)
 		{
