@@ -6,7 +6,7 @@
 /*   By: abdelilah <abdelilah@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 14:25:05 by yolaidi-          #+#    #+#             */
-/*   Updated: 2025/07/24 13:57:49 by abdelilah        ###   ########.fr       */
+/*   Updated: 2025/07/25 21:59:18 by abdelilah        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ typedef struct s_env
 	struct s_env	*next;
 }			t_env;
 
+struct s_node {
+    char data;
+    struct s_node* next;
+};
+
 /* Parsing */
 ast_node_t		*parse_pipeline(parser_t *parser);
 ast_node_t		*parse_command(parser_t *parser);
@@ -157,4 +162,6 @@ int				wait_pipeline_children(int left_pid, int right_pid);
 int				exec_pipeline_left(ast_node_t *node, t_env **env, int *pipefd);
 int				exec_pipeline_right(ast_node_t *node, t_env **env, int *pipefd);
 char 			*strip_quotes(const char *val);
+int				verify_quotes(const char *exp);
+
 #endif

@@ -13,6 +13,12 @@ token_t	*tokenize(char *input)
 	token_t *tokens = malloc(sizeof(token_t) * MAX_TOKENS);
 	if (!tokens)
 		return (NULL);
+	if (verify_quotes(input) == 0)
+	{
+		print_exec_error("syntax error", "unclosed quote");
+		return (NULL);
+	}
+	i = 0;
 	while (input[i] && token_count < MAX_TOKENS - 1)
 	{
 		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
@@ -52,28 +58,6 @@ token_t	*tokenize(char *input)
 			{
 				tokens[token_count].type = "REDIR_OUT";
 				tokens[token_count].value = strdup(">");
-				i++;
-			}
-		}
-		else if (input[i] == '"' || input[i] == '\'')
-		{
-			char	quote = input[i++];
-			int		start = i;
-
-			while (input[i] && input[i] != quote)
-				i++;
-			if (!input[i])
-			{
-				print_exec_error("syntax error", "unclosed quote");
-				tokens[token_count].type = "WORD";
-				tokens[token_count].value = strndup(&input[start], i - start);
-				tokens[token_count].was_quoted = 1;
-			}
-			else
-			{
-				tokens[token_count].type = "WORD";
-				tokens[token_count].value = strndup(&input[start - 1], i - start + 2);
-				tokens[token_count].was_quoted = 1;
 				i++;
 			}
 		}
