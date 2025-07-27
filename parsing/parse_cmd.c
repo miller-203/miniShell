@@ -76,6 +76,26 @@ ast_node_t *parse_command(parser_t *parser)
 
     cmd->args[cmd->arg_count] = NULL;
 
+    if (!cmd->name && cmd->redirections)
+    {
+        redirection_t *redir = cmd->redirections;
+        while (redir)
+        {
+            if (redir->type == REDIR_HEREDOC)
+            {
+                int fd = heredoc(redir->filename);
+                if (fd >= 0)
+                    close(fd);
+            }
+            redir = redir->next;
+        }
+        free(cmd->was_quoted);
+        free(cmd->args);
+        free(cmd->name);
+        free(cmd);
+        return NULL;
+    }
+
     ast_node_t *node = create_ast_node(NODE_COMMAND);
     if (!node)
     {

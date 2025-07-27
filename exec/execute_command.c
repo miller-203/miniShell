@@ -143,7 +143,8 @@ int	execute_command(command_t *cmd, t_env **env)
 	if (!cmd || !cmd->name)
 		return (1);
 	expand_command_args(cmd, *env);
-	expand_redirections(cmd->redirections, *env);
+	if (cmd->redirections->type != REDIR_HEREDOC)
+		expand_redirections(cmd->redirections, *env);
 	// i = 0;
 	// while (i < cmd->arg_count)
 	// {
